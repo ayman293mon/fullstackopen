@@ -26,13 +26,18 @@ useEffect(hook, [])
    }
   const handleNewNoteChange = (e) => setNewNote(e.target.value);
   const toggleShowAll = () => setShowAll(!showAll);
+  const toggleImportance = (id) => {
+    console.log('importance of', id, 'needs to be toggled')
+  }
   return (
     <div>
       <h1>Notes</h1>
       <button onClick={toggleShowAll}> show {showAll ? 'important' : 'all' } </button>
       <ul>
         {NoteToShow.map((note) => (
-          <Note key={note.id} note={note} />
+          <Note 
+          key={note.id} note={note} toggleImportance={() => toggleImportance(note.id)}
+          />
         ))}
       </ul>
       <form onSubmit={addNote}>

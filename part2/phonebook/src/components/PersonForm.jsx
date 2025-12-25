@@ -1,5 +1,6 @@
 import { useState } from "react";
-export default function PersonForm({persons, setPersons}) {
+import phonebook from '../services/phonebook'
+export default function PersonForm({persons, setPersons, setNotification}) {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const handleNameChange = (event) => {
@@ -10,14 +11,45 @@ export default function PersonForm({persons, setPersons}) {
     }
     const handleAddPerson = (event) => {
         event.preventDefault()
-        if (persons.some(person => person.name === newName)) {
-            alert(`${newName} is already added to phonebook`)
-            return
-        }
-        const newPerson = { name: newName, number: newNumber, id: String(persons.length + 1) }
-        setPersons(persons.concat(newPerson))
-        setNewName('')
-        setNewNumber('')
+        if (persons.some(person =>   person.name === newName)) {
+            if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+                const personToUpdate = persons.find(person => person.name === newName)
+                const updatedPerson = { ...personToUpdate, number: newNumber }
+                phonebook.update(personToUpdate.id, updatedPerson)
+                .then(returnedPerson => {
+                    setPersons(persons.map(person => person.id !== personToUpdate.id ? person : returnedPerson))
+                    setNewName('')
+                    setNewNumber('')
+                    setNotification(`Updated ${newName}'s number`)
+                    setTimeout(() => {
+                        setNotification(null)
+                    }, 5000)
+                }).catch(error => {
+                    setNotification(`Information of ${newName} has already been removed from server`)
+                    setTimeout(() => {
+                        setNotification(null)
+                    }, 5000)
+                });
+            }
+        } else {
+        const newPerson = { name: newName, number: newNumber}
+        phonebook.create(newPerson)
+        .then(returnedPerson => {
+            setPersons(persons.concat(returnedPerson))
+            setNewName('')
+            setNewNumber('')
+            setNotification(`Added ${newName}`)
+            setTimeout(() => {
+                setNotification(null)
+            }, 5000)
+        }).catch(error => {
+            setNotification('Error adding person')
+            setTimeout(() => {
+                setNotification(null)
+            }, 5000)
+        })
+
+    }
     }
     return (
         <>
