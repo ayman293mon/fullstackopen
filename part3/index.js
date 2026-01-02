@@ -1,12 +1,15 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(express.json());
+
 morgan.token('info', (req, res) => {
     return req.method === 'POST' ? JSON.stringify(req.body) : '';
 })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :info'));
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;  
 let persons =
     [
         {
@@ -30,6 +33,9 @@ let persons =
             "number": "39-23-6423122"
         }
     ];
+app.get('/', (req, res) => {
+    res.send('<h1>Hello World!</h1>');
+});
 app.get('/api/persons', (req, res) => {
     res.json(persons);
 });
@@ -46,8 +52,12 @@ app.get('/api/persons/:id', (req, res) => {
 });
 app.delete('/api/persons/:id', (req, res) => {
     const id = req.params.id;
+    const person = persons.find(p => p.id === id);
+    if (!person) {
+       return res.status(404).end();
+    }
     persons = persons.filter(p => p.id !== id);
-    res.status(204).end();
+    res.json(person);
 });
 const generateID = () => {
     return (Math.round(Math.random() * 1000000000)).toString();
