@@ -5,14 +5,18 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "shx rm -rf dist && cd ../part2/phonebook && npm run build && shx cp -r dist ../../part3/",
+    "deploy:full": "npm run build:ui && git add . && git commit -m \"deploying full app\" && git push origin main"
   },
   "author": "mon",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^5.2.1",
     "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "shx": "^0.4.0"
   }
 }
