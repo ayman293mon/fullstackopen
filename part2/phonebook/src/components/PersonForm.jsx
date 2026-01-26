@@ -25,7 +25,7 @@ export default function PersonForm({ persons, setPersons, setNotification }) {
                             setNotification(null)
                         }, 5000)
                     }).catch(error => {
-                        setNotification(`Information of ${newName} has already been removed from server`)
+                        setNotification(`Information of ${newName} has already been removed from server: ${error.message}`)
                         setTimeout(() => {
                             setNotification(null)
                         }, 5000)
@@ -43,7 +43,7 @@ export default function PersonForm({ persons, setPersons, setNotification }) {
                         setNotification(null)
                     }, 5000)
                 }).catch(error => {
-                    setNotification('Error adding person')
+                    setNotification(`Error adding person: ${error.message}`)
                     setTimeout(() => {
                         setNotification(null)
                     }, 5000)
