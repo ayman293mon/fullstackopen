@@ -13,6 +13,7 @@ mongoose
 const phonebookSchema = new mongoose.Schema({
   name: {
     type: String,
+    distinct: true,
     minLength: 3,
     required: [true, "Name is required"],
   },
