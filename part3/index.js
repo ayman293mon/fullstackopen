@@ -50,22 +50,21 @@ app.delete("/api/persons/:id", (req, res, next) => {
 app.put("/api/persons/:id", (req, res, next) => {
   const id = req.params.id;
   const { name, number } = req.body;
-  persons
-    .findByIdAndUpdate(
-      id,
-      { name, number },
-      { new: true, runValidators: true, context: "query" },
-    )
-    .then((updatedPerson) => {
-      if (updatedPerson) {
+  persons.findById(id).then((person) => {
+    if (!person) {
+      return res.status(404).json({ error: "Person not found" });
+    }
+    person.name = name;
+    person.number = number;
+    person
+      .save()
+      .then((updatedPerson) => {
         res.json(updatedPerson);
-      } else {
-        res.status(404).end();
-      }
-    })
-    .catch((error) => {
-      next(error);
-    });
+      })
+      .catch((error) => {
+        next(error);
+      });
+  });
 });
 app.post("/api/persons", (req, res, next) => {
   const newPerson = new persons({
