@@ -7,7 +7,8 @@
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "shx rm -rf dist && cd ../part2/phonebook && npm install && npm run build && shx cp -r dist ../../part3/",
-    "deploy:full": "npm run build:ui && git add . && git commit -m \"deploying full app\" && git push origin main"
+    "deploy:full": "npm run build:ui && git add . && git commit -m \"deploying full app\" && git push origin main",
+    "lint": "eslint ."
   },
   "author": "mon",
   "license": "ISC",
@@ -20,7 +21,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "eslint": "^10.0.2",
+    "eslint-config-prettier": "^10.1.8",
     "globals": "^17.3.0",
     "shx": "^0.4.0"
   }
