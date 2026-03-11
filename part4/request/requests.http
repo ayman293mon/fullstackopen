@@ -1,0 +1,32 @@
+GET http://localhost:3001/api/bloglist/
+###
+# Get all blogs
+
+POST http://localhost:3001/api/bloglist/
+Content-Type: application/json  
+
+{
+  "title": "New Blog Post",
+  "author": "Mon",
+  "url": "http://example.com/new-blog-post",
+  "likes": 10
+}
+###
+# Create a new blog post
+GET http://localhost:3001/api/bloglist/69b1b593bcf8fc2063a036be
+###
+# Get a specific blog post by ID (replace 69b1b593bcf8fc2063a036be with the actual ID)
+DELETE http://localhost:3001/api/bloglist/69b1b593bcf8fc2063a036be
+###
+# Delete a specific blog post by ID (replace 69b1b593bcf8fc2063a036be with the actual ID)
+PUT http://localhost:3001/api/bloglist/69b1b593bcf8fc2063a036be
+Content-Type: application/json
+
+{
+  "title": "Updated Blog Post",
+  "author": "Mon",
+  "url": "http://example.com/updated-blog-post",
+  "likes": 20
+}
+###
+# Update a specific blog post by ID (replace 69b1b593bcf8fc2063a036be with the actual ID)

@@ -12,7 +12,7 @@ export default function App() {
   useEffect(() => {
     phonebook.getAll()
       .then(data => setPersons(data))
-      .catch(error => {
+      .catch(() => {
         setNotification('Error fetching phonebook data')
         setTimeout(() => {
           setNotification(null)

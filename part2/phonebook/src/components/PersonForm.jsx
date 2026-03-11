@@ -43,7 +43,8 @@ export default function PersonForm({ persons, setPersons, setNotification }) {
                         setNotification(null)
                     }, 5000)
                 }).catch(error => {
-                    setNotification(`Error adding person: ${error.message}`)
+                    console.log(error)
+                    setNotification(error.response.data.error);
                     setTimeout(() => {
                         setNotification(null)
                     }, 5000)

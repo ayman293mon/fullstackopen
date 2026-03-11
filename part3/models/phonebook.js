@@ -37,4 +37,3 @@ phonebookSchema.set('toJSON', {
   },
 })
 module.exports = mongoose.model('Phonebook', phonebookSchema)
-  
