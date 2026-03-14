@@ -13,13 +13,13 @@ Content-Type: application/json
 }
 ###
 # Create a new blog post
-GET http://localhost:3001/api/bloglist/69b1b593bcf8fc2063a036be
+GET http://localhost:3001/api/bloglist/69b325ed396b8ca2be2c3284
 ###
 # Get a specific blog post by ID (replace 69b1b593bcf8fc2063a036be with the actual ID)
-DELETE http://localhost:3001/api/bloglist/69b1b593bcf8fc2063a036be
+DELETE http://localhost:3001/api/bloglist/69b325ed396b8ca2be2c3284
 ###
 # Delete a specific blog post by ID (replace 69b1b593bcf8fc2063a036be with the actual ID)
-PUT http://localhost:3001/api/bloglist/69b1b593bcf8fc2063a036be
+PUT http://localhost:3001/api/bloglist/69b32621d4fda9d55d6f7575
 Content-Type: application/json
 
 {
