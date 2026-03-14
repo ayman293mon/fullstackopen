@@ -30,3 +30,16 @@ Content-Type: application/json
 }
 ###
 # Update a specific blog post by ID (replace 69b1b593bcf8fc2063a036be with the actual ID)
+
+POST http://localhost:3001/api/users/
+Content-Type: application/json
+
+{
+  "username": "ayman",
+  "name": "Mon Ahmed",
+  "password": "password123"
+} 
+###
+# Create a new user
+GET http://localhost:3001/api/users/
+###
