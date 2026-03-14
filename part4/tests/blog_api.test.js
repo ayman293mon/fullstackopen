@@ -87,4 +87,31 @@ describe('blog api tests', () => {
         .send(newBlog)
         .expect(400)
     })
+    test('a blog can be deleted', async() => {
+        const allBlogs = await helper.blogsInDb()
+        const blogToDelete = allBlogs[0]
+        await api.delete(`/api/bloglist/${blogToDelete.id}`)
+        .expect(204)
+        const blogsAfterDeletion = await helper.blogsInDb()
+        assert.strictEqual(blogsAfterDeletion.length, allBlogs.length - 1)
+        const ids = blogsAfterDeletion.map(b => b.id)
+        assert.ok(!ids.includes(blogToDelete.id))
+    })
+    test('a blog can be updated', async() => {
+        const allBlogs = await helper.blogsInDb()
+        const blogToUpdate = allBlogs[0]
+        const updatedBlogData = {
+            title: 'Updated Title',
+            author: 'Updated Author',
+            url: 'http://updatedurl.com',
+            likes: 42
+        }
+        const updatedBlog = await api.put(`/api/bloglist/${blogToUpdate.id}`)
+        .send(updatedBlogData)
+        .expect(200)
+        assert.deepStrictEqual(updatedBlog.body, {...updatedBlogData, id: blogToUpdate.id})
+        const blogsAfterUpdate = await helper.blogsInDb()
+        const updatedBlogFromDb = blogsAfterUpdate.find(b => b.id === blogToUpdate.id)
+        assert.deepStrictEqual(updatedBlogFromDb, {...updatedBlogData, id: blogToUpdate.id})
+    })
 })
