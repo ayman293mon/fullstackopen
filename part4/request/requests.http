@@ -6,7 +6,7 @@ POST http://localhost:3001/api/bloglist/
 Content-Type: application/json  
 
 {
-  "title": "New Blog Post",
+  "title": "New Blog Post1",
   "author": "Mon",
   "url": "http://example.com/new-blog-post",
   "likes": 10
@@ -35,9 +35,9 @@ POST http://localhost:3001/api/users/
 Content-Type: application/json
 
 {
-  "username": "ayman",
-  "name": "Mon Ahmed",
-  "password": "password123"
+  "username": "helloworld",
+  "name": "hello",
+  "password": "password"
 } 
 ###
 # Create a new user

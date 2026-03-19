@@ -11,6 +11,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    blogs: [
+        {
+            type: mongoose.Schema.Types.ObjectId,   
+            ref: 'blog'
+        }
+    ],
     passwordHash: {
         type: String,
         required: true
@@ -24,4 +30,4 @@ userSchema.set('toJSON', {
         delete returnedObject.passwordHash
     }
 })
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('user', userSchema)

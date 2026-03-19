@@ -1,7 +1,10 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog.js')
+const User = require('../models/users.js')
+const userRouter = require('./users.js')
+
 blogsRouter.get('/', async (req, res) => {
-    const blogs = await Blog.find({})
+    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })    
     res.json(blogs)
 })
 
@@ -18,12 +21,19 @@ blogsRouter.post('/', async (req, res) => {
     if (!title || !url) {
         return res.status(400).json({ error: 'title and url are required' })
     }
+
     const blog = new Blog({
         title: title,
         author: author,
         url: url, 
         likes: likes || 0
     })
+    const user_random = await User.findOne({});
+    if (user_random) {
+        blog.user = user_random._id
+        user_random.blogs = user_random.blogs.concat(blog._id)
+        await user_random.save()
+    }
     const savedBlog = await blog.save()
     res.status(201).json(savedBlog)
 })

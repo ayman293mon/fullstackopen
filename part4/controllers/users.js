@@ -1,6 +1,7 @@
 const userRouter = require('express').Router()
 const User = require('../models/users.js')
 const bcrypt = require('bcrypt')
+const blog = require('../models/blog.js')
 userRouter.post('/', async (req, res) => {
     const { username, name, password } = req.body
     if (!username || !password) {
@@ -20,7 +21,7 @@ userRouter.post('/', async (req, res) => {
     res.status(201).json(savedUser)
 })
 userRouter.get('/', async (req, res) => {
-    const users = await User.find({})
+    const users = await User.find({}).populate('blogs', { title: 1, author: 1, url: 1, id: 1 })
     res.json(users)
 })
 module.exports = userRouter
