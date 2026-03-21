@@ -1,7 +1,6 @@
 const userRouter = require('express').Router()
 const User = require('../models/users.js')
 const bcrypt = require('bcrypt')
-const blog = require('../models/blog.js')
 userRouter.post('/', async (req, res) => {
     const { username, name, password } = req.body
     if (!username || !password) {

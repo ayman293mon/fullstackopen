@@ -6,7 +6,7 @@ POST http://localhost:3001/api/bloglist/
 Content-Type: application/json  
 
 {
-  "title": "New Blog Post1",
+  "title": "New Blog Post2",
   "author": "Mon",
   "url": "http://example.com/new-blog-post",
   "likes": 10
@@ -35,7 +35,7 @@ POST http://localhost:3001/api/users/
 Content-Type: application/json
 
 {
-  "username": "helloworld",
+  "username": "elloworld",
   "name": "hello",
   "password": "password"
 } 
@@ -43,3 +43,35 @@ Content-Type: application/json
 # Create a new user
 GET http://localhost:3001/api/users/
 ###
+
+POST http://localhost:3001/api/login/
+Content-Type: application/json
+
+{
+  "username": "elloworld",
+  "password": "password"
+}
+###
+# Login with the created user and get a token
+POST http://localhost:3001/api/login/
+Content-Type: application/json
+
+{
+  "username": "elloworld",
+  "password": "password"
+}
+###
+# Login with the created user and get a token, then use the token to create a new blog post
+
+POST http://localhost:3001/api/bloglist/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsbG93b3JsZCIsImlkIjoiNjliYjc2OTc4MTZmMmZkMWJlNjdlNGI3IiwiaWF0IjoxNzc0MDI0MzA3LCJleHAiOjE3NzQwMjUyMDd9.VqrdiVM8vK0nH49_athxDZLyW9pAgyEXGorBDnx59_0
+
+{
+  "title": "Lol this is a new blog post with author not valid", 
+  "author": "lol",
+  "url": "http://example.com/new-blog-post-with-token",
+  "likes": 15
+}
+###
+# Create a new blog post with token authentication
