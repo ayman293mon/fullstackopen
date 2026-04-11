@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 const Blog = ({ blog, handleLike, handleDelete }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
   const toggleDetails = () => {
@@ -30,7 +30,7 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
       {detailsVisible && (
         <div className="blog-details">
           <div>{blog.url}</div>
-          <span>{blog.likes} likes</span> 
+          <span>{blog.likes} likes</span>
           <button onClick={handleLikeClick}>like</button>
           <div>added by {blog.user.name}</div>
           <button onClick={handleDeleteClick}>delete</button>

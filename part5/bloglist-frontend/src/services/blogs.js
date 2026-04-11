@@ -19,10 +19,10 @@ const create = async (newObject) => {
   return request.data // return the created blog object
 }
 const remove = async (id) => {
-    const request = await axios.delete(`${baseUrl}/bloglist/${id}`, {
-      headers: {Authorization: token }
-    })
-    return request.data
+  const request = await axios.delete(`${baseUrl}/bloglist/${id}`, {
+    headers: { Authorization: token }
+  })
+  return request.data
 }
 const login = async (credentials) => {
   const request = await axios.post(`${baseUrl}/login`, credentials)

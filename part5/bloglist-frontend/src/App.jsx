@@ -59,10 +59,10 @@ export default function App() {
       setPassword('')
       updateNotification('login successful', 'success')
     } catch (error) {
-      console.log('wrong credentials')
+      console.log('wrong credentials', error)
       updateNotification('wrong username or password', 'error')
-    
-    console.log(user)}
+
+      console.log(user)}
   }
   const handelLogout = (event) => {
     event.preventDefault()
@@ -72,38 +72,38 @@ export default function App() {
     updateNotification('logout successful', 'success')
   }
   const createBlog = async (blogObject) => {
-        const returnedBlog = await blogService.create(blogObject)
-        setBlogs(blogs.concat(returnedBlog))
-        blogFormRef.current.toggleVisibility()
+    const returnedBlog = await blogService.create(blogObject)
+    setBlogs(blogs.concat(returnedBlog))
+    blogFormRef.current.toggleVisibility()
   }
   if (user === null) {
-      return (<>
-        <Notification message={notification} type={notificationType} />
-        <h2>log in to application</h2>
-        <form onSubmit={handelLogin}>
-          <label htmlFor="username">username</label>
-          <input
-            id="username"
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-          <br />
-          <br />
-          <label htmlFor="password">password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-          <br />
-          <br />
-          <button type="submit">login</button>
-        </form>
-      </>)
+    return (<>
+      <Notification message={notification} type={notificationType} />
+      <h2>log in to application</h2>
+      <form onSubmit={handelLogin}>
+        <label htmlFor="username">username</label>
+        <input
+          id="username"
+          type="text"
+          value={username}
+          name="Username"
+          onChange={({ target }) => setUsername(target.value)}
+        />
+        <br />
+        <br />
+        <label htmlFor="password">password</label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          name="Password"
+          onChange={({ target }) => setPassword(target.value)}
+        />
+        <br />
+        <br />
+        <button type="submit">login</button>
+      </form>
+    </>)
   }
   const handleLike = async (blog) => {
     try {
@@ -111,13 +111,13 @@ export default function App() {
       let newBlogs = [...blogs]
       for (let i = 0; i < blogs.length; ++i) {
         if (blogs[i].id === blog.id) {
-          newBlogs[i].likes = updatedBlog.likes;
-          break;
-        } 
+          newBlogs[i].likes = updatedBlog.likes
+          break
+        }
       }
       newBlogs.sort(compareByLikes)
       setBlogs(newBlogs)
-      updateNotification(`liked ${blog.title} by ${blog.author}`, 'success')  
+      updateNotification(`liked ${blog.title} by ${blog.author}`, 'success')
     } catch (error) {
       console.log('error updating blog', error)
       updateNotification('error updating blog', 'error')
@@ -127,7 +127,7 @@ export default function App() {
     try {
       await blogService.remove(blog.id)
       setBlogs(blogs.filter(b => b.id !== blog.id))
-      updateNotification(`deleted ${blog.title} by ${blog.author}`, 'success')  
+      updateNotification(`deleted ${blog.title} by ${blog.author}`, 'success')
     } catch (error) {
       console.log('error deleting blog', error)
       updateNotification('error deleting blog', 'error')
@@ -138,16 +138,15 @@ export default function App() {
       <Notification message={notification} type={notificationType} />
       <h2>blogs</h2>
       <p>{user.username} logged in</p>
-      <button onClick={handelLogout}>logout</button>  
+      <button onClick={handelLogout}>logout</button>
       <br />
       <br />
       <Togglable label='create new blog' ref = {blogFormRef}>
         <BlogForm updateNotification={updateNotification} createBlog={createBlog} />
       </Togglable>
-        {blogs.map(blog =>
+      {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDelete={handleDelete} />
       )}
     </div>
   )
 }
-    
