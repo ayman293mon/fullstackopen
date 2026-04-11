@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import blogService from "../services/blogs";
-export default function BlogForm({ blogs, setBlogs, updateNotification }) {
+export default function BlogForm({ createBlog, updateNotification }) {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -13,14 +13,16 @@ export default function BlogForm({ blogs, setBlogs, updateNotification }) {
             author: author,
             url: url
         }
-        const returnedBlog = await blogService.create(blogObject)
-        setBlogs(blogs.concat(returnedBlog))
+        await createBlog(blogObject)
+        // const returnedBlog = await blogService.create(blogObject)
+        // setBlogs(blogs.concat(returnedBlog))
         setTitle('')
         setAuthor('')
         setUrl('')
-        updateNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`, 'success')
+        updateNotification(`a new blog ${title} by ${author} added`, 'success')
+        // blogFormRef.current.toggleVisibility()
     } catch (error) {
-        updateNotification('Error adding blog', 'error')
+        updateNotification('Error adding blog', error)
     }
   }
   return (

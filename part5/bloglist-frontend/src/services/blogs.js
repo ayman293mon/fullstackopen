@@ -18,6 +18,12 @@ const create = async (newObject) => {
   } )
   return request.data // return the created blog object
 }
+const remove = async (id) => {
+    const request = await axios.delete(`${baseUrl}/bloglist/${id}`, {
+      headers: {Authorization: token }
+    })
+    return request.data
+}
 const login = async (credentials) => {
   const request = await axios.post(`${baseUrl}/login`, credentials)
   const { AccessToken } = request.data
@@ -26,5 +32,10 @@ const login = async (credentials) => {
     token: AccessToken
   }
 }
-
-export default { getAll, create, setToken, login }
+const update = async (id, updatedObject) => {
+  const request = await axios.put(`${baseUrl}/bloglist/${id}`, updatedObject, {
+    headers: { Authorization: token }
+  })
+  return request.data
+}
+export default { getAll, create, setToken, login, update, remove }

@@ -1,8 +1,9 @@
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
-import BlogForm from './components/blogForm'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 export default function App() {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
@@ -10,6 +11,8 @@ export default function App() {
   const [password, setPassword] = useState('')
   const [notification, setNotification] = useState(null)
   const [notificationType, setNotificationType] = useState('success')
+  const blogFormRef = useRef()
+  const compareByLikes = (a, b) => b.likes - a.likes
   const updateNotification = (message, type) => {
     setNotification(message)
     setNotificationType(type)
@@ -22,7 +25,9 @@ export default function App() {
     (async () => {
       try {
         const blogs = await blogService.getAll()
+        blogs.sort(compareByLikes)
         setBlogs(blogs)
+        console.log('fetched blogs', blogs)
       } catch (error) {
         console.log('error fetching blogs', error)
         updateNotification('error fetching blogs', 'error')
@@ -56,7 +61,8 @@ export default function App() {
     } catch (error) {
       console.log('wrong credentials')
       updateNotification('wrong username or password', 'error')
-    }
+    
+    console.log(user)}
   }
   const handelLogout = (event) => {
     event.preventDefault()
@@ -64,6 +70,11 @@ export default function App() {
     blogService.setToken(null)
     setUser(null)
     updateNotification('logout successful', 'success')
+  }
+  const createBlog = async (blogObject) => {
+        const returnedBlog = await blogService.create(blogObject)
+        setBlogs(blogs.concat(returnedBlog))
+        blogFormRef.current.toggleVisibility()
   }
   if (user === null) {
       return (<>
@@ -94,7 +105,34 @@ export default function App() {
         </form>
       </>)
   }
-
+  const handleLike = async (blog) => {
+    try {
+      const updatedBlog = await blogService.update(blog.id, { ...blog, likes: blog.likes + 1 })
+      let newBlogs = [...blogs]
+      for (let i = 0; i < blogs.length; ++i) {
+        if (blogs[i].id === blog.id) {
+          newBlogs[i].likes = updatedBlog.likes;
+          break;
+        } 
+      }
+      newBlogs.sort(compareByLikes)
+      setBlogs(newBlogs)
+      updateNotification(`liked ${blog.title} by ${blog.author}`, 'success')  
+    } catch (error) {
+      console.log('error updating blog', error)
+      updateNotification('error updating blog', 'error')
+    }
+  }
+  const handleDelete = async (blog) => {
+    try {
+      await blogService.remove(blog.id)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+      updateNotification(`deleted ${blog.title} by ${blog.author}`, 'success')  
+    } catch (error) {
+      console.log('error deleting blog', error)
+      updateNotification('error deleting blog', 'error')
+    }
+  }
   return (
     <div>
       <Notification message={notification} type={notificationType} />
@@ -103,9 +141,11 @@ export default function App() {
       <button onClick={handelLogout}>logout</button>  
       <br />
       <br />
-      <BlogForm blogs={blogs} setBlogs={setBlogs} updateNotification={updateNotification} />
+      <Togglable label='create new blog' ref = {blogFormRef}>
+        <BlogForm updateNotification={updateNotification} createBlog={createBlog} />
+      </Togglable>
         {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDelete={handleDelete} />
       )}
     </div>
   )
