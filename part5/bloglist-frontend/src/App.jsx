@@ -2,16 +2,21 @@ import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
-import Notification from './components/Notification'
-import Togglable from './components/Togglable'
+import Login from './components/login'
+import Home from './components/Home'
+import Navbar from './components/Navbar'
+import {
+  Routes, Route, useMatch
+} from 'react-router-dom'
 export default function App() {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [notification, setNotification] = useState(null)
   const [notificationType, setNotificationType] = useState('success')
   const blogFormRef = useRef()
+  const match = useMatch('/blogs/:id')
+  const blog = match ? blogs.find(blog => blog.id === match.params.id) : null
   const compareByLikes = (a, b) => b.likes - a.likes
   const updateNotification = (message, type) => {
     setNotification(message)
@@ -38,12 +43,12 @@ export default function App() {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
+      setIsLoggedIn(true)
       setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
-  const handelLogin = async(event) => {
-    event.preventDefault()
+  const handleLogin = async(username, password) => {
     console.log('logging in with', username, password)
     const credentials = {
       username: username,
@@ -55,55 +60,28 @@ export default function App() {
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify({ token: token, username }))
       blogService.setToken(token)
       setUser({ token: token, username })
-      setUsername('')
-      setPassword('')
+      setIsLoggedIn(true)
       updateNotification('login successful', 'success')
     } catch (error) {
       console.log('wrong credentials', error)
       updateNotification('wrong username or password', 'error')
+      console.log(user)
+      throw new Error('wrong username or password')
+    }
 
-      console.log(user)}
   }
-  const handelLogout = (event) => {
+  const handleLogout = (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser')
     blogService.setToken(null)
     setUser(null)
+    setIsLoggedIn(false)
     updateNotification('logout successful', 'success')
   }
   const createBlog = async (blogObject) => {
     const returnedBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(returnedBlog))
-    blogFormRef.current.toggleVisibility()
-  }
-  if (user === null) {
-    return (<>
-      <Notification message={notification} type={notificationType} />
-      <h2>log in to application</h2>
-      <form onSubmit={handelLogin}>
-        <label htmlFor="username">username</label>
-        <input
-          id="username"
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-        <br />
-        <br />
-        <label htmlFor="password">password</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-        <br />
-        <br />
-        <button type="submit">login</button>
-      </form>
-    </>)
+    return returnedBlog
   }
   const handleLike = async (blog) => {
     try {
@@ -135,18 +113,21 @@ export default function App() {
   }
   return (
     <div>
-      <Notification message={notification} type={notificationType} />
-      <h2>blogs</h2>
-      <p>{user.username} logged in</p>
-      <button onClick={handelLogout}>logout</button>
-      <br />
-      <br />
-      <Togglable label='create new blog' ref = {blogFormRef}>
-        <BlogForm updateNotification={updateNotification} createBlog={createBlog} />
-      </Togglable>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDelete={handleDelete} />
-      )}
+      <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      <Routes>
+        <Route path="/" element={
+          <Home blogs={blogs} notification={notification} notificationType={notificationType} user={user} updateNotification={updateNotification} createBlog={createBlog} handleLike={handleLike} handleDelete={handleDelete} blogFormRef={blogFormRef} isLoggedIn={isLoggedIn} />
+        } />
+        <Route path="/login" element={
+          <Login handleLogin={handleLogin} notification={notification} notificationType={notificationType} />
+        } />
+        <Route path="/blogs/:id" element={
+          <Blog blog={blog} isLoggedIn={isLoggedIn} handleLike={handleLike} handleDelete={handleDelete} updateNotification={updateNotification} notification={notification} notificationType={notificationType} />
+        } />
+        <Route path="/create-blog" element = {
+          <BlogForm updateNotification={updateNotification} createBlog={createBlog} isLoggedIn={isLoggedIn} />
+        } />
+      </Routes>
     </div>
   )
 }

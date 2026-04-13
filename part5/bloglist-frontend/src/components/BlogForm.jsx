@@ -1,9 +1,15 @@
-import React from 'react'
 import { useState } from 'react'
-export default function BlogForm({ createBlog, updateNotification }) {
+import { useNavigate } from 'react-router-dom'
+export default function BlogForm({ createBlog, updateNotification, isLoggedIn }) {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const navigate = useNavigate()
+  if (!isLoggedIn) {
+    updateNotification('You must be logged in to create a blog', 'error')
+    navigate('/')
+    return null
+  }
   const addBLog = async (event) => {
     event.preventDefault()
     try {
@@ -13,16 +19,14 @@ export default function BlogForm({ createBlog, updateNotification }) {
         url: url
       }
       await createBlog(blogObject)
-      // const returnedBlog = await blogService.create(blogObject)
-      // setBlogs(blogs.concat(returnedBlog))
       setTitle('')
       setAuthor('')
       setUrl('')
       updateNotification(`a new blog ${title} by ${author} added`, 'success')
-      // blogFormRef.current.toggleVisibility()
     } catch (error) {
       updateNotification('Error adding blog', error)
     }
+    navigate('/')
   }
   return (
     <form onSubmit={addBLog}>
