@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState } from 'react'
 import Notification from './Notification'
 import { useNavigate } from 'react-router-dom'
